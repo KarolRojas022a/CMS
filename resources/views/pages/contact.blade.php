@@ -8,9 +8,17 @@
         <div class="col-lg-6">
             <h1 class="mb-4 text-center">Contacto</h1>
 
+            {{-- Alerta para mostrar mensaje de éxito enviada desde el Controller --}}
+            @if (session('status'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('status') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
-                    <form method="POST" action="{{ route('pages.contact') }}">
+                    <form method="POST" action="{{ route('contact.send') }}">
                         @csrf
 
                         <div class="mb-3">
@@ -51,5 +59,6 @@
     </div>
 </div>
 @endsection
+
 
  
