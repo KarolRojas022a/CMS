@@ -13,6 +13,9 @@
         <a href="{{ route('pages.contact') }}" class="btn btn-light btn-lg mt-2">
             Contáctanos
         </a>
+        <a href="{{ route('login') }}" class="btn btn-dark btn-lg mt-2 ms-2">
+            Iniciar sesión
+        </a>
     </div>
 </section>
 
@@ -52,3 +55,8 @@
 </section>
 @endsection
 
+
+{{-- Enlace al login --}}
+<a href="{{ route('login') }}">
+    Iniciar sesión
+</a>

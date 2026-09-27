@@ -13,7 +13,7 @@ class AuthController extends Controller
     // Mostrar formulario de registro
     public function showRegister()
     {
-        return view('auth.register'); // Asegúrate de tener la vista resources/views/auth/register.blade.php
+        return view('auth.register');
     }
 
     // Procesar registro de usuario
@@ -44,7 +44,7 @@ class AuthController extends Controller
     // Mostrar formulario de login
     public function showLogin()
     {
-        return view('auth.login'); // Asegúrate de tener la vista resources/views/auth/login.blade.php
+        return view('auth.login');
     }
 
     // Procesar inicio de sesión

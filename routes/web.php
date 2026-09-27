@@ -2,53 +2,59 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ReceivedEmailController;
 
-/*
-|--------------------------------------------------------------------------
-| Rutas Públicas (Páginas Estáticas)
-|--------------------------------------------------------------------------
-*/
+// ---------- Rutas públicas ----------
 Route::get('/', [HomeController::class, 'index'])
-->name('pages.home');
+    ->name('pages.home');
 
 Route::get('/about', [HomeController::class, 'about'])
-->name('pages.about');
+    ->name('pages.about');
 
 Route::get('/contact', [HomeController::class, 'contact'])
-->name('pages.contact');
+    ->name('pages.contact');
 
-Route::post('/contacto', [HomeController::class, 'sendContact'])
-    ->middleware('throttle:10,1')
-    ->name('contact.send');
+Route::get('/posts/{post}', [PostController::class, 'show'])
+    ->name('posts.show');
 
-/*
-|--------------------------------------------------------------------------
-| Rutas para Invitados (Usuarios NO Autenticados)
-|--------------------------------------------------------------------------
-*/
+Route::get('/contacto', [ContactController::class, 'create'])
+    ->name('contact.create');
+
+Route::post('/contacto', [ContactController::class, 'store'])
+    ->middleware('throttle:contact')
+     ->name('contact.store');
+
+// ---------- Autenticación (solo invitados) ----------
 Route::middleware('guest')->group(function () {
-    Route::get('/registro', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/registro', [AuthController::class, 'register'])->name('register.store');
+    Route::get('/login', [LoginController::class, 'create'])
+        ->name('login');
 
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])
-        ->middleware('throttle:5,1')
+    Route::post('/login', [LoginController::class, 'store'])
+        ->middleware('throttle:login')
         ->name('login.store');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Rutas Privadas (Usuarios Autenticados)
-|--------------------------------------------------------------------------
-*/
+// ---------- Zona protegida (solo autenticados) ----------
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-    // Rutas CRUD completas para publicaciones
-    Route::resource('posts', PostController::class);
-     
+    Route::get('/dashboard/received-emails', [ReceivedEmailController::class, 'index'])
+        ->name('received-emails.index');
+
+    Route::get('/dashboard/received-emails/{receivedEmail}', [ReceivedEmailController::class, 'show'])
+        ->name('received-emails.show');
+
+    Route::post('/logout', [LoginController::class, 'destroy'])
+        ->name('logout');
 });
+
+Route::post('/contact', [ContactController::class, 'send'])
+    ->name('contact.send');
+
