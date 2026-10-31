@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        return view('dashboard');
+        $posts = auth()->user()->posts();
+
+        return view('dashboard', [
+            'postCount' => (clone $posts)->count(),
+            'publishedCount' => (clone $posts)->where('is_published', true)->count(),
+            'draftCount' => (clone $posts)->where('is_published', false)->count(),
+            'recentPosts' => (clone $posts)->latest()->take(5)->get(),
+        ]);
     }
-    
 }

@@ -12,5 +12,6 @@ if (passwordInput && toggleButton) {
             'aria-label',
             hidden ? 'Ocultar contraseña' : 'Mostrar contraseña'
         );
+        toggleButton.setAttribute('aria-pressed', String(hidden));
     });
 }
