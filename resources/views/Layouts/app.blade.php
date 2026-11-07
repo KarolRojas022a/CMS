@@ -51,7 +51,7 @@
                         </li>
                         @auth
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('dashboard', 'posts.*', 'received-emails.*') ? 'active fw-semibold' : '' }}" href="{{ route('dashboard') }}">Panel de gestión</a>
+                                <a class="nav-link {{ request()->routeIs('dashboard', 'posts.*', 'received-emails.*', 'users.*') ? 'active fw-semibold' : '' }}" href="{{ route('dashboard') }}">Panel de gestión</a>
                             </li>
                             <li class="nav-item d-flex align-items-center ms-lg-2">
                                 <form method="POST" action="{{ route('logout') }}">
@@ -79,6 +79,18 @@
         @if (session('error'))
             <div class="container mt-3">
                 <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="container mt-3">
+                <div class="alert alert-danger" role="alert">
+                    <p class="fw-semibold mb-1">Revisa los datos ingresados:</p>
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
         @endif
         @yield('content')

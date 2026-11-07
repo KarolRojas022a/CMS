@@ -23,8 +23,12 @@ class PostController extends Controller
 
     public function index(): View
     {
+        $posts = auth()->user()->isAdmin()
+            ? Post::query()
+            : auth()->user()->posts();
+
         return view('posts.index', [
-            'posts' => auth()->user()->posts()->latest()->paginate(10),
+            'posts' => $posts->latest()->paginate(10),
         ]);
     }
 

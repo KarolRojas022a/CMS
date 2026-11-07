@@ -8,7 +8,9 @@
         <div>
             <p class="section-kicker mb-2">Área institucional</p>
             <h1 class="h2 mb-1">Hola, {{ auth()->user()->name }}</h1>
-            <p class="text-secondary mb-0">Administra las publicaciones de la zona pública.</p>
+            <p class="text-secondary mb-0">
+                {{ auth()->user()->isAdmin() ? 'Administra las publicaciones y las cuentas del CMS.' : 'Administra tus publicaciones de la zona pública.' }}
+            </p>
         </div>
         <a href="{{ route('posts.create') }}" class="btn btn-primary">Crear publicación</a>
     </div>
@@ -16,7 +18,7 @@
     <div class="row g-3 mb-5">
         <div class="col-sm-4">
             <div class="panel-card p-4">
-                <p class="text-secondary mb-1">Mis publicaciones</p>
+                <p class="text-secondary mb-1">{{ auth()->user()->isAdmin() ? 'Publicaciones' : 'Mis publicaciones' }}</p>
                 <p class="stat-value mb-0">{{ $postCount }}</p>
             </div>
         </div>
@@ -36,15 +38,20 @@
 
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3">
         <h2 class="h4 mb-0">Actividad reciente</h2>
-        <div class="d-flex gap-3">
+        <div class="d-flex flex-wrap gap-3">
             <a href="{{ route('posts.index') }}">Gestionar publicaciones</a>
             <a href="{{ route('received-emails.index') }}">Buzón de entrada</a>
+            @if (auth()->user()->isAdmin())
+                <a href="{{ route('users.index') }}">Administrar usuarios</a>
+            @endif
         </div>
     </div>
 
     <div class="panel-card overflow-hidden">
         @if ($recentPosts->isEmpty())
-            <div class="p-4 text-secondary">Todavía no tienes publicaciones. Crea una para comenzar.</div>
+            <div class="p-4 text-secondary">
+                {{ auth()->user()->isAdmin() ? 'Todavía no hay publicaciones. Crea una para comenzar.' : 'Todavía no tienes publicaciones. Crea una para comenzar.' }}
+            </div>
         @else
             <div class="table-responsive">
                 <table class="table align-middle mb-0">

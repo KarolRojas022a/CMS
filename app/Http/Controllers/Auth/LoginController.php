@@ -1,4 +1,5 @@
 <?php
+
 // filepath: C:\xampp\htdocs\cms\app\Http\Controllers\Auth\LoginController.php
 
 namespace App\Http\Controllers\Auth;
@@ -22,6 +23,7 @@ class LoginController extends Controller
             'email' => ['required', 'email', 'max:255'],
             'password' => ['required', 'string'],
         ]);
+        $credentials['is_active'] = true;
 
         if (! Auth::attempt(
             $credentials,

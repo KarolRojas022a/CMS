@@ -6,6 +6,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReceivedEmailController;
+use App\Http\Controllers\UserManagementController;
+use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Support\Facades\Route;
 
 // ---------- Rutas públicas ----------
@@ -42,7 +45,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // ---------- Zona protegida (solo autenticados) ----------
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', EnsureUserIsActive::class])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
@@ -62,6 +65,20 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard/received-emails/{receivedEmail}', [ReceivedEmailController::class, 'show'])
         ->name('received-emails.show');
+
+    Route::middleware(EnsureUserIsAdmin::class)
+        ->prefix('/dashboard/users')
+        ->name('users.')
+        ->controller(UserManagementController::class)
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{user}/edit', 'edit')->name('edit');
+            Route::put('/{user}', 'update')->name('update');
+            Route::put('/{user}/password', 'updatePassword')->name('password');
+            Route::patch('/{user}/status', 'updateStatus')->name('status');
+        });
 
     Route::post('/logout', [LoginController::class, 'destroy'])
         ->name('logout');
