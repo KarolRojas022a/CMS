@@ -18,6 +18,10 @@ class SecurityHeaders
     {
         $response = $next($request);
 
+        if (! headers_sent()) {
+            header_remove('X-Powered-By');
+        }
+
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $response->headers->set('X-XSS-Protection', '1; mode=block');
@@ -26,6 +30,14 @@ class SecurityHeaders
             'Permissions-Policy',
             'camera=(), microphone=(), geolocation=()'
         );
+        $response->headers->set('X-Permitted-Cross-Domain-Policies', 'none');
+
+        if ($request->isSecure()) {
+            $response->headers->set(
+                'Strict-Transport-Security',
+                'max-age=31536000'
+            );
+        }
 
         return $response;
     }

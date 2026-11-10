@@ -23,7 +23,7 @@ class AuthTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->post('/login', [
-            'email'    => $user->email,
+            'email' => $user->email,
             'password' => 'password',
         ]);
 
@@ -36,7 +36,7 @@ class AuthTest extends TestCase
         User::factory()->create(['email' => 'test@example.com']);
 
         $response = $this->post('/login', [
-            'email'    => 'test@example.com',
+            'email' => 'test@example.com',
             'password' => 'wrongpassword',
         ]);
 
@@ -98,7 +98,7 @@ class AuthTest extends TestCase
 
         $response = $this->actingAs($user)->post('/logout');
 
-        $response->assertRedirect('/');
+        $response->assertRedirect('/login');
         $this->assertGuest();
     }
 
